@@ -64,11 +64,11 @@
   */
 
 #define STORAGE_LUN_NBR                  1
-#define STORAGE_BLK_NBR                  200
+#define STORAGE_BLK_NBR                  100
 #define STORAGE_BLK_SIZ                  0x200
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
-
+uint8_t buffer[STORAGE_BLK_NBR * STORAGE_BLK_SIZ];
 /* USER CODE END PRIVATE_DEFINES */
 
 /**
@@ -93,9 +93,9 @@
   * @{
   */
 
-/* USER CODE BEGIN INQUIRY_DATA_HS */ 
+/* USER CODE BEGIN INQUIRY_DATA_FS */
 /** USB Mass storage Standard Inquiry Data. */
-const int8_t STORAGE_Inquirydata_HS[] = {/* 36 */
+const int8_t STORAGE_Inquirydata_FS[] = {/* 36 */
   
   /* LUN 0 */
   0x00,
@@ -111,10 +111,9 @@ const int8_t STORAGE_Inquirydata_HS[] = {/* 36 */
   ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
   '0', '.', '0' ,'1'                      /* Version      : 4 Bytes */
 }; 
-/* USER CODE END INQUIRY_DATA_HS */
+/* USER CODE END INQUIRY_DATA_FS */
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-uint8_t buffer[STORAGE_BLK_NBR*STORAGE_BLK_SIZ];
 /* USER CODE END PRIVATE_VARIABLES */
 
 /**
@@ -126,7 +125,7 @@ uint8_t buffer[STORAGE_BLK_NBR*STORAGE_BLK_SIZ];
   * @{
   */
 
-extern USBD_HandleTypeDef hUsbDeviceHS;
+extern USBD_HandleTypeDef hUsbDeviceFS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 
@@ -141,13 +140,13 @@ extern USBD_HandleTypeDef hUsbDeviceHS;
   * @{
   */
 
-static int8_t STORAGE_Init_HS(uint8_t lun);
-static int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_size);
-static int8_t STORAGE_IsReady_HS(uint8_t lun);
-static int8_t STORAGE_IsWriteProtected_HS(uint8_t lun);
-static int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
-static int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
-static int8_t STORAGE_GetMaxLun_HS(void);
+static int8_t STORAGE_Init_FS(uint8_t lun);
+static int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size);
+static int8_t STORAGE_IsReady_FS(uint8_t lun);
+static int8_t STORAGE_IsWriteProtected_FS(uint8_t lun);
+static int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
+static int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
+static int8_t STORAGE_GetMaxLun_FS(void);
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
 
@@ -157,30 +156,29 @@ static int8_t STORAGE_GetMaxLun_HS(void);
   * @}
   */
 
-USBD_StorageTypeDef USBD_Storage_Interface_fops_HS =
+USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
 {
-  STORAGE_Init_HS,
-  STORAGE_GetCapacity_HS,
-  STORAGE_IsReady_HS,
-  STORAGE_IsWriteProtected_HS,
-  STORAGE_Read_HS,
-  STORAGE_Write_HS,
-  STORAGE_GetMaxLun_HS,
-  (int8_t *)STORAGE_Inquirydata_HS
+  STORAGE_Init_FS,
+  STORAGE_GetCapacity_FS,
+  STORAGE_IsReady_FS,
+  STORAGE_IsWriteProtected_FS,
+  STORAGE_Read_FS,
+  STORAGE_Write_FS,
+  STORAGE_GetMaxLun_FS,
+  (int8_t *)STORAGE_Inquirydata_FS
 };
 
 /* Private functions ---------------------------------------------------------*/
-
 /**
-  * @brief  .
-  * @param  lun: .
+  * @brief  Initializes over USB FS IP
+  * @param  lun:
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_Init_HS(uint8_t lun)
+int8_t STORAGE_Init_FS(uint8_t lun)
 {
-  /* USER CODE BEGIN 9 */
+  /* USER CODE BEGIN 2 */
   return (USBD_OK);
-  /* USER CODE END 9 */
+  /* USER CODE END 2 */
 }
 
 /**
@@ -190,13 +188,13 @@ int8_t STORAGE_Init_HS(uint8_t lun)
   * @param  block_size: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
+int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
-  /* USER CODE BEGIN 10 */
+  /* USER CODE BEGIN 3 */
   *block_num  = STORAGE_BLK_NBR;
   *block_size = STORAGE_BLK_SIZ;
   return (USBD_OK);
-  /* USER CODE END 10 */
+  /* USER CODE END 3 */
 }
 
 /**
@@ -204,11 +202,11 @@ int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_
   * @param  lun: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_IsReady_HS(uint8_t lun)
+int8_t STORAGE_IsReady_FS(uint8_t lun)
 {
-  /* USER CODE BEGIN 11 */
+  /* USER CODE BEGIN 4 */
   return (USBD_OK);
-  /* USER CODE END 11 */
+  /* USER CODE END 4 */
 }
 
 /**
@@ -216,43 +214,37 @@ int8_t STORAGE_IsReady_HS(uint8_t lun)
   * @param  lun: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_IsWriteProtected_HS(uint8_t lun)
+int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
 {
-  /* USER CODE BEGIN 12 */
+  /* USER CODE BEGIN 5 */
   return (USBD_OK);
-  /* USER CODE END 12 */
+  /* USER CODE END 5 */
 }
 
 /**
   * @brief  .
   * @param  lun: .
-  * @param  buf: .
-  * @param  blk_addr: .
-  * @param  blk_len: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
+int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-  /* USER CODE BEGIN 13 */
-	  memcpy(buf, &buffer[blk_addr*STORAGE_BLK_SIZ], blk_len*STORAGE_BLK_SIZ);
+  /* USER CODE BEGIN 6 */
+	memcpy(buf, &buffer[blk_addr*STORAGE_BLK_SIZ], blk_len * STORAGE_BLK_SIZ);
   return (USBD_OK);
-  /* USER CODE END 13 */
+  /* USER CODE END 6 */
 }
 
 /**
   * @brief  .
   * @param  lun: .
-  * @param  buf: .
-  * @param  blk_addr: .
-  * @param  blk_len: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
+int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
-  /* USER CODE BEGIN 14 */
-	  memcpy(&buffer[blk_addr*STORAGE_BLK_SIZ], buf, blk_len*STORAGE_BLK_SIZ);
+  /* USER CODE BEGIN 7 */
+	memcpy(&buffer[blk_addr*STORAGE_BLK_SIZ], buf, blk_len * STORAGE_BLK_SIZ);
   return (USBD_OK);
-  /* USER CODE END 14 */
+  /* USER CODE END 7 */
 }
 
 /**
@@ -260,11 +252,11 @@ int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
   * @param  None
   * @retval .
   */
-int8_t STORAGE_GetMaxLun_HS(void)
+int8_t STORAGE_GetMaxLun_FS(void)
 {
-  /* USER CODE BEGIN 15 */
+  /* USER CODE BEGIN 8 */
   return (STORAGE_LUN_NBR - 1);
-  /* USER CODE END 15 */
+  /* USER CODE END 8 */
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
