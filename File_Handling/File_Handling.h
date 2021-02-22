@@ -11,7 +11,6 @@
 #include "fatfs.h"
 #include "string.h"
 #include "stdio.h"
-#include "fatfs.h"
 
 
 /* mounts the sd card*/

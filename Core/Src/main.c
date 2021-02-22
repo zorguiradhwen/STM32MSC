@@ -29,6 +29,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "File_Handling.h"
+#include "printf_override.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -97,9 +98,12 @@ int main(void)
   MX_SDIO_SD_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
+  printf_init();
 
+  printf("Hello World!\n\r");
   Mount_SD("/");
   Format_SD();
+  Check_SD_Space();
   Create_File("FILE1.TXT");
   Create_File("FILE2.TXT");
   Unmount_SD("/");
